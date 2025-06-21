@@ -5,21 +5,26 @@
   min-height: 100vh;
   display: flex;
   align-items: center;
-  justify-content: center;
-  background: white;
+  justify-content: flex-end;
+  background: url('/images/backgrounds/background_login.png') no-repeat left center;
+  background-size: cover;
 }
 
 .login-container {
   width: 100%;
   max-width: 324px;
   padding: 1.62rem;
+  margin-right: 5rem;
 }
 
 .login-card {
-  background: white;
+  background: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 12px;
   padding: 1.62rem;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
   text-align: center;
 }
 
@@ -35,14 +40,15 @@
 }
 
 .login-card h1 {
-  color: #333;
+  color: silver;
   margin-bottom: 0.5rem;
   font-size: 2rem;
   font-weight: bold;
+  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .login-subtitle {
-  color: #666;
+  color: grey;
   margin-bottom: 2rem;
   font-size: 0.95rem;
 }
@@ -52,13 +58,17 @@
 }
 
 .form-group {
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.form-group-last {
+  margin-bottom: 1rem;
 }
 
 .form-group label {
   display: block;
   margin-bottom: 0.5rem;
-  color: #333;
+  color: silver;
   font-weight: 500;
   font-size: 0.9rem;
   text-align: center;
@@ -67,18 +77,23 @@
 .form-group input {
   width: 100%;
   padding: 0.75rem;
-  border: 2px solid #e1e5e9;
+  border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 8px;
   font-size: 1rem;
   transition: border-color 0.3s ease;
   box-sizing: border-box;
-  background: white;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: silver;
+  caret-color: #ff8c00;
+  caret-width: 5px;
 }
 
 .form-group input:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: #ff8c00;
+  box-shadow: 0 0 0 3px rgba(255, 140, 0, 0.2);
 }
 
 .form-group input.error {
@@ -87,13 +102,13 @@
 
 .form-group input.error:focus {
   border-color: #e74c3c;
-  box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+  box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.2);
 }
 
 .error-message {
   color: #e74c3c;
-  font-size: 0.85rem;
-  margin-top: 0.5rem;
+  font-size: 0.765rem;
+  margin-top: 0.25rem;
 }
 
 .general-error {
@@ -145,4 +160,77 @@
 .forgot-password:hover {
   color: #ff8c00;
   text-decoration: underline;
+}
+
+.create-account-section {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.create-account-text {
+  color: grey;
+  font-size: 0.9rem;
+}
+
+.create-account-link {
+  color: silver;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.3s ease;
+}
+
+.create-account-link:hover {
+  color: #ff8c00;
+  text-decoration: underline;
+}
+
+.divider {
+  margin: 3rem 0;
+  text-align: center;
+  position: relative;
+}
+
+.divider::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 25%;
+  right: 25%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.google-login-button {
+  width: 100%;
+  background: black;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 0.875rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.google-login-button:hover:not(:disabled) {
+  background: #ff8c00;
+  color: black;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 140, 0, 0.4);
+}
+
+.google-login-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.google-icon {
+  width: 20px;
+  height: 20px;
 }
