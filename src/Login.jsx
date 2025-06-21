@@ -1,14 +1,34 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
+import { useAuth } from './context/AuthContext'
+import { handleApiError, validateForm } from './utils/errorHandler'
 import './App.css'
 
 function Login() {
+  const { login, isLoading, error, clearError, isAuthenticated } = useAuth()
+  const navigate = useNavigate()
+  const location = useLocation()
+
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   })
   const [errors, setErrors] = useState({})
-  const [isLoading, setIsLoading] = useState(false)
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      const from = location.state?.from?.pathname || '/dashboard'
+      navigate(from, { replace: true })
+    }
+  }, [isAuthenticated, navigate, location])
+
+  // Clear errors when auth error changes
+  useEffect(() => {
+    if (error) {
+      setErrors({ general: handleApiError(error) })
+    }
+  }, [error])
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
@@ -25,50 +45,32 @@ function Login() {
     }
   }
 
-  const validateForm = () => {
-    const newErrors = {}
-    
-    if (!formData.email) {
-      newErrors.email = 'Email is required'
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email is invalid'
-    }
-    
-    if (!formData.password) {
-      newErrors.password = 'Password is required'
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters'
-    }
-    
-    return newErrors
+  const validateLoginForm = () => {
+    return validateForm(formData, {
+      email: { required: true, email: true, label: 'Email' },
+      password: { required: true, minLength: 6, label: 'Password' }
+    })
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    
-    const newErrors = validateForm()
+
+    // Clear any previous errors
+    clearError()
+    setErrors({})
+
+    const newErrors = validateLoginForm()
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors)
       return
     }
-    
-    setIsLoading(true)
-    setErrors({})
-    
+
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      // Here you would typically make an API call to your backend
-      console.log('Login attempt:', formData)
-      alert('Login successful! (This is just a demo)')
-      
-      // Reset form
-      setFormData({ email: '', password: '' })
+      await login(formData)
+      // Navigation will be handled by useEffect when isAuthenticated changes
     } catch (error) {
-      setErrors({ general: 'Login failed. Please try again.' })
-    } finally {
-      setIsLoading(false)
+      // Error is handled by the auth context and useEffect
+      console.error('Login failed:', error)
     }
   }
 
@@ -76,7 +78,7 @@ function Login() {
     <div className="login-container">
       <div className="login-card">
         <div className="logo-container">
-          <img src="/images/logos/Q-bot_logo.png" alt="Q-bot Logo" className="login-logo" />
+          <img src="./images/logos/Q-bot_logo.png" alt="Q-bot Logo" className="login-logo" />
         </div>
         <h1>Q-bot</h1>
         <p className="login-subtitle">Please sign in to your account</p>

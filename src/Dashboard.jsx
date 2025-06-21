@@ -1,12 +1,15 @@
 import { useState } from 'react'
+import { useAuth } from './context/AuthContext'
 import './Dashboard.css'
 
 function Dashboard() {
+  const { user, logout } = useAuth()
+
   const [messages, setMessages] = useState([
     {
       id: 1,
       type: 'bot',
-      content: 'Hello! I\'m Q-bot. How can I help you today?',
+      content: `Hello${user?.firstName ? ` ${user.firstName}` : ''}! I'm Q-bot. How can I help you today?`,
       timestamp: new Date()
     }
   ])
@@ -42,10 +45,13 @@ function Dashboard() {
     console.log('File upload clicked')
   }
 
-  const handleLogout = () => {
-    // Handle logout logic here
-    console.log('Logout clicked')
-    // You would typically clear user session and redirect to login
+  const handleLogout = async () => {
+    try {
+      await logout()
+      // Navigation will be handled by the AuthProvider
+    } catch (error) {
+      console.error('Logout failed:', error)
+    }
   }
 
   return (

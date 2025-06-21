@@ -2,6 +2,9 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import './App.css'
 
+// API base URL
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
+
 function Register() {
   const [formData, setFormData] = useState({
     email: ''
@@ -38,28 +41,57 @@ function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    
+
     const newErrors = validateForm()
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors)
       return
     }
-    
+
     setIsLoading(true)
     setErrors({})
-    
+
     try {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000))
-      
+
       // Here you would typically make an API call to your backend
       console.log('Registration attempt:', formData)
       alert('Registration successful! (This is just a demo)')
-      
+
       // Reset form
       setFormData({ email: '' })
     } catch (error) {
       setErrors({ general: 'Registration failed. Please try again.' })
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleGoogleLogin = async () => {
+    try {
+      setIsLoading(true)
+      setErrors({})
+
+      // Check if Google OAuth is available
+      const response = await fetch(`${API_BASE_URL}/auth/google`)
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        setErrors({
+          general: errorData.message || 'Google login is currently unavailable. Please use email registration.'
+        })
+        return
+      }
+
+      // If successful, redirect to Google OAuth
+      window.location.href = `${API_BASE_URL}/auth/google`
+
+    } catch (error) {
+      console.error('Google login error:', error)
+      setErrors({
+        general: 'Google login is currently unavailable. Please use email registration.'
+      })
     } finally {
       setIsLoading(false)
     }
@@ -72,7 +104,6 @@ function Register() {
           <img src="/images/logos/Q-bot_logo.png" alt="Q-bot Logo" className="login-logo" />
         </div>
         <h1>Create Account</h1>
-        <p className="login-subtitle">Join Q-bot to get started</p>
         
         <form onSubmit={handleSubmit} className="login-form">
           {errors.general && (
@@ -110,7 +141,7 @@ function Register() {
 
         <button
           className="google-login-button"
-          onClick={() => console.log('Google login clicked')}
+          onClick={handleGoogleLogin}
           disabled={isLoading}
         >
           <svg className="google-icon" viewBox="0 0 24 24" width="20" height="20">

@@ -2,7 +2,9 @@
   max-width: 100%;
   margin: 0;
   padding: 0;
-  min-height: 100vh;
+  height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -15,6 +17,10 @@
   max-width: 324px;
   padding: 1.62rem;
   margin-right: 5rem;
+  max-height: 100vh;
+  overflow-y: auto;
+  display: flex;
+  align-items: center;
 }
 
 .login-card {
@@ -23,9 +29,12 @@
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 12px;
-  padding: 1.62rem;
+  padding: 1.2rem;
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
   text-align: center;
+  width: 100%;
+  max-height: calc(100vh - 3.24rem);
+  overflow-y: auto;
 }
 
 .logo-container {
@@ -49,7 +58,7 @@
 
 .login-subtitle {
   color: grey;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   font-size: 0.95rem;
 }
 
@@ -146,7 +155,7 @@
 }
 
 .login-footer {
-  margin-top: 1.5rem;
+  margin-top: 1rem;
   text-align: center;
 }
 
@@ -185,7 +194,7 @@
 }
 
 .divider {
-  margin: 3rem 0;
+  margin: 1.5rem 0;
   text-align: center;
   position: relative;
 }
@@ -233,4 +242,10 @@
 .google-icon {
   width: 20px;
   height: 20px;
+}
+
+/* Loading spinner animation */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
