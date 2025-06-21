@@ -5,6 +5,8 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
+    "https": "node index-https.js",
+    "dev-https": "nodemon index-https.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

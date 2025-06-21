@@ -61,7 +61,7 @@ function Dashboard() {
         <div className="chat-sidebar">
           <div className="sidebar-header">
             <div className="logo-section">
-              <img src="/images/logos/Q-bot_logo.png" alt="Q-bot Logo" className="sidebar-logo" />
+              <img src="./images/logos/Q-bot_logo.png" alt="Q-bot Logo" className="sidebar-logo" />
               <span className="sidebar-brand">Q-bot</span>
             </div>
           </div>
@@ -117,7 +117,7 @@ function Dashboard() {
                 <div className="message-content">
                   {message.type === 'bot' && (
                     <div className="bot-avatar">
-                      <img src="/images/logos/Q-bot_logo.png" alt="Q-bot" />
+                      <img src="./images/logos/Q-bot_logo.png" alt="Q-bot" />
                     </div>
                   )}
                   <div className="message-bubble">

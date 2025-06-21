@@ -1,19 +1,24 @@
 const express = require('express');
+const https = require('https');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const passport = require('./config/passport');
 const database = require('./config/database');
+const { getCerts } = require('https-localhost');
 
 // Load environment variables
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.HTTPS_PORT || 5001;
 
 // Security middleware
-app.use(helmet());
+app.use(helmet({
+  crossOriginEmbedderPolicy: false,
+  contentSecurityPolicy: false
+}));
 
 // Rate limiting
 const limiter = rateLimit({
@@ -23,11 +28,11 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-// CORS configuration
+// CORS configuration - Allow GitHub Pages
 app.use(cors({
   origin: [
-    process.env.CLIENT_URL || 'http://localhost:5173',
     'https://crownvibe300.github.io',
+    'http://localhost:5173',
     'http://localhost:3000'
   ],
   credentials: true,
@@ -58,8 +63,9 @@ app.use('/api/users', require('./routes/users'));
 app.get('/api/health', (req, res) => {
   res.json({ 
     status: 'OK', 
-    message: 'Q-bot server is running',
-    timestamp: new Date().toISOString()
+    message: 'Q-bot HTTPS server is running',
+    timestamp: new Date().toISOString(),
+    cors: 'enabled for GitHub Pages'
   });
 });
 
@@ -77,26 +83,43 @@ app.use('*', (req, res) => {
   res.status(404).json({ message: 'Route not found' });
 });
 
-const server = app.listen(PORT, () => {
-  console.log(`Q-bot server running on port ${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
-});
+// Start HTTPS server
+async function startServer() {
+  try {
+    const certs = await getCerts();
+    
+    const server = https.createServer(certs, app);
+    
+    server.listen(PORT, () => {
+      console.log(`🚀 Q-bot HTTPS server running on https://localhost:${PORT}`);
+      console.log(`🌐 CORS enabled for GitHub Pages`);
+      console.log(`🔒 SSL certificates generated automatically`);
+      console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+    });
 
-// Graceful shutdown
-process.on('SIGINT', async () => {
-  console.log('\nShutting down gracefully...');
-  await database.close();
-  server.close(() => {
-    console.log('Server closed');
-    process.exit(0);
-  });
-});
+    // Graceful shutdown
+    process.on('SIGINT', async () => {
+      console.log('\nShutting down gracefully...');
+      await database.close();
+      server.close(() => {
+        console.log('HTTPS server closed');
+        process.exit(0);
+      });
+    });
 
-process.on('SIGTERM', async () => {
-  console.log('SIGTERM received, shutting down gracefully...');
-  await database.close();
-  server.close(() => {
-    console.log('Server closed');
-    process.exit(0);
-  });
-});
+    process.on('SIGTERM', async () => {
+      console.log('SIGTERM received, shutting down gracefully...');
+      await database.close();
+      server.close(() => {
+        console.log('HTTPS server closed');
+        process.exit(0);
+      });
+    });
+
+  } catch (error) {
+    console.error('Failed to start HTTPS server:', error);
+    process.exit(1);
+  }
+}
+
+startServer();

@@ -101,7 +101,7 @@ function Register() {
     <div className="login-container">
       <div className="login-card">
         <div className="logo-container">
-          <img src="/images/logos/Q-bot_logo.png" alt="Q-bot Logo" className="login-logo" />
+          <img src="./images/logos/Q-bot_logo.png" alt="Q-bot Logo" className="login-logo" />
         </div>
         <h1>Create Account</h1>
         
