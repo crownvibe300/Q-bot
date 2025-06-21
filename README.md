@@ -1,12 +1,34 @@
-# React + Vite
+# Q-bot
+A chatbot to make your life easier
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## React + Vite Frontend
 
-Currently, two official plugins are available:
+This project provides a React-based login interface for Q-bot, built with Vite for fast development and hot module replacement.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## Expanding the ESLint configuration
+- Clean, responsive login page with Q-bot branding
+- Form validation for email and password fields
+- Orange-themed UI with professional styling
+- Full-screen responsive design
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Getting Started
+
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+2. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+3. Open your browser to `http://localhost:5173`
+
+## Tech Stack
+
+- React 18
+- Vite
+- CSS3 with modern styling
+- Form validation and state management
