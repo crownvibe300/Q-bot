@@ -1,13 +1,13 @@
 /* Dark Theme Variables */
 :root[data-theme="dark"] {
   /* Background colors */
-  --bg-primary: #0f0f0f;
-  --bg-secondary: #1a1a1a;
-  --bg-tertiary: #2d2d2d;
+  --bg-primary: #000000;
+  --bg-secondary: #000000;
+  --bg-tertiary: #1a1a1a;
   --bg-card: rgba(255, 255, 255, 0.05);
-  --bg-sidebar: #1a1a1a;
-  --bg-chat: #121212;
-  --bg-chat-input: #1e1e1e;
+  --bg-sidebar: #000000;
+  --bg-chat: #000000;
+  --bg-chat-input: #000000;
   
   /* Text colors */
   --text-primary: #ffffff;
@@ -98,13 +98,17 @@
 }
 
 [data-theme="dark"] .dashboard-container {
-  background: var(--bg-primary);
+  background: #000000 !important;
   color: var(--text-primary);
 }
 
 [data-theme="dark"] .chat-sidebar {
-  background: var(--bg-sidebar);
+  background: #000000 !important;
   border-right: 1px solid var(--border-primary);
+}
+
+[data-theme="dark"] .chat-container {
+  background: #000000 !important;
 }
 
 [data-theme="dark"] .sidebar-brand {
@@ -141,11 +145,11 @@
 
 /* Chat Area Dark Theme */
 [data-theme="dark"] .chat-main {
-  background: var(--bg-chat);
+  background: #000000 !important;
 }
 
 [data-theme="dark"] .chat-messages {
-  background: var(--bg-chat) !important;
+  background: #000000 !important;
   color: var(--text-primary);
 }
 
@@ -192,7 +196,7 @@
 
 /* Chat Input Area Dark Theme */
 [data-theme="dark"] .chat-input-area {
-  background: var(--bg-chat-input) !important;
+  background: #000000 !important;
   border-top: 1px solid var(--border-primary) !important;
 }
 
@@ -232,11 +236,11 @@
 /* Mobile Chat Dark Theme */
 @media (max-width: 768px) {
   [data-theme="dark"] .chat-messages {
-    background: var(--bg-chat) !important;
+    background: #000000 !important;
   }
 
   [data-theme="dark"] .chat-input-area {
-    background: var(--bg-chat-input) !important;
+    background: #000000 !important;
     border-top: 1px solid var(--border-primary) !important;
   }
 }
