@@ -1,18 +1,32 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from './context/AuthContext'
 import './App.css'
 
-// API base URL
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
-
 function Register() {
+  const { register, isLoading, error, clearError, isAuthenticated, googleLogin } = useAuth()
+  const navigate = useNavigate()
+
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   })
   const [errors, setErrors] = useState({})
-  const [isLoading, setIsLoading] = useState(false)
   const [showPasswordStep, setShowPasswordStep] = useState(false)
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard')
+    }
+  }, [isAuthenticated, navigate])
+
+  // Handle auth errors
+  useEffect(() => {
+    if (error) {
+      setErrors({ general: error })
+    }
+  }, [error])
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
@@ -48,6 +62,8 @@ function Register() {
       newErrors.password = 'Password is required'
     } else if (formData.password.length < 6) {
       newErrors.password = 'Password must be at least 6 characters long'
+    } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.password)) {
+      newErrors.password = 'Password must contain at least one uppercase letter, one lowercase letter, and one number'
     }
 
     return newErrors
@@ -77,24 +93,43 @@ function Register() {
       return
     }
 
-    setIsLoading(true)
+    // Clear any previous errors
+    clearError()
     setErrors({})
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      // Use AuthContext register function
+      await register({
+        email: formData.email,
+        password: formData.password
+      })
 
-      // Here you would typically make an API call to your backend
-      console.log('Registration attempt:', formData)
-      alert('Registration successful! (This is just a demo)')
+      // Registration successful - AuthContext handles token storage
+      console.log('Registration successful!')
 
       // Reset form
       setFormData({ email: '', password: '' })
       setShowPasswordStep(false)
+
+      // Navigate to dashboard
+      navigate('/dashboard')
+
     } catch (error) {
-      setErrors({ general: 'Registration failed. Please try again.' })
-    } finally {
-      setIsLoading(false)
+      console.error('Registration error:', error)
+
+      // Handle specific validation errors
+      if (error.message.includes('validation')) {
+        // Try to parse validation errors from the error message
+        if (error.message.includes('Password must contain')) {
+          setErrors({ password: error.message })
+        } else if (error.message.includes('email')) {
+          setErrors({ email: error.message })
+        } else {
+          setErrors({ general: error.message })
+        }
+      } else {
+        setErrors({ general: error.message || 'Registration failed. Please try again.' })
+      }
     }
   }
 
@@ -105,33 +140,10 @@ function Register() {
     }
   }
 
-  const handleGoogleLogin = async () => {
-    try {
-      setIsLoading(true)
-      setErrors({})
-
-      // Check if Google OAuth is available
-      const response = await fetch(`${API_BASE_URL}/auth/google`)
-
-      if (!response.ok) {
-        const errorData = await response.json()
-        setErrors({
-          general: errorData.message || 'Google login is currently unavailable. Please use email registration.'
-        })
-        return
-      }
-
-      // If successful, redirect to Google OAuth
-      window.location.href = `${API_BASE_URL}/auth/google`
-
-    } catch (error) {
-      console.error('Google login error:', error)
-      setErrors({
-        general: 'Google login is currently unavailable. Please use email registration.'
-      })
-    } finally {
-      setIsLoading(false)
-    }
+  const handleGoogleLogin = () => {
+    clearError()
+    setErrors({})
+    googleLogin()
   }
 
   return (

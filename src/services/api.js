@@ -152,39 +152,6 @@ export const userAPI = {
   }
 };
 
-// Conversation API methods
-export const conversationAPI = {
-  // Get conversation history
-  getHistory: async (page = 1, limit = 10) => {
-    return apiService.get(`/conversations?page=${page}&limit=${limit}`);
-  },
-
-  // Get specific conversation
-  getConversation: async (conversationId) => {
-    return apiService.get(`/conversations/${conversationId}`);
-  },
-
-  // Save conversation
-  saveConversation: async (conversationData) => {
-    return apiService.post('/conversations', conversationData);
-  },
-
-  // Update conversation
-  updateConversation: async (conversationId, conversationData) => {
-    return apiService.put(`/conversations/${conversationId}`, conversationData);
-  },
-
-  // Delete conversation
-  deleteConversation: async (conversationId) => {
-    return apiService.delete(`/conversations/${conversationId}`);
-  },
-
-  // Search conversations
-  searchConversations: async (query) => {
-    return apiService.get(`/conversations/search?q=${encodeURIComponent(query)}`);
-  }
-};
-
 // Health check
 export const healthAPI = {
   check: async () => {
