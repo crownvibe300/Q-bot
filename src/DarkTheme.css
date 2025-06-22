@@ -1,3 +1,25 @@
+/* Smooth Transitions for Theme Switching */
+* {
+  transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              backdrop-filter 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Enhanced transitions for specific elements */
+.dashboard-container,
+.chat-sidebar,
+.chat-main,
+.chat-messages,
+.login-card,
+.conversation-history-modal {
+  transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+              color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+              backdrop-filter 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
 /* Dark Theme Variables */
 :root[data-theme="dark"] {
   /* Background colors */
@@ -34,11 +56,11 @@
 /* Light Theme Variables (default) */
 :root[data-theme="light"] {
   --bg-primary: #ffffff;
-  --bg-secondary: #f8f9fa;
-  --bg-tertiary: #e9ecef;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #ffffff;
   --bg-card: rgba(0, 0, 0, 0.25);
   --bg-sidebar: #ffffff;
-  --bg-chat: #f8f9fa;
+  --bg-chat: #ffffff;
   
   --text-primary: #000000;
   --text-secondary: #666666;
@@ -56,6 +78,31 @@
   --msg-bot-bg: #f1f3f4;
   --msg-user-text: #ffffff;
   --msg-bot-text: #000000;
+}
+
+/* Light Theme Explicit Styling */
+[data-theme="light"] .dashboard-container {
+  background: #ffffff !important;
+}
+
+[data-theme="light"] .chat-sidebar {
+  background: #ffffff !important;
+}
+
+[data-theme="light"] .chat-main {
+  background: #ffffff !important;
+}
+
+[data-theme="light"] .chat-messages {
+  background: #ffffff !important;
+}
+
+[data-theme="light"] .sidebar-header {
+  background: #ffffff !important;
+}
+
+[data-theme="light"] .chat-input-area {
+  background: #ffffff !important;
 }
 
 /* Dark Theme Overrides */
@@ -111,6 +158,22 @@
   background: #000000 !important;
 }
 
+[data-theme="dark"] .sidebar-header {
+  background: #000000 !important;
+  border-bottom: 1px solid var(--border-primary);
+}
+
+[data-theme="dark"] .quick-action-btn {
+  background: var(--bg-tertiary) !important;
+  border: 1px solid var(--border-primary) !important;
+  color: var(--text-secondary) !important;
+}
+
+[data-theme="dark"] .mobile-menu {
+  background: #000000 !important;
+  border: 1px solid var(--border-primary);
+}
+
 [data-theme="dark"] .sidebar-brand {
   color: var(--text-primary) !important;
   font-weight: 600;
@@ -121,13 +184,60 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  background: #000000 !important;
+}
+
+[data-theme="dark"] .logo-container {
+  background: #000000 !important;
+}
+
+[data-theme="dark"] .login-logo {
+  background: #000000 !important;
+  border-radius: 8px;
+  padding: 4px;
+}
+
+/* Force all images and logos to have black backgrounds */
+[data-theme="dark"] img {
+  background: #000000 !important;
+  border-radius: 4px;
+}
+
+[data-theme="dark"] .sidebar-logo,
+[data-theme="dark"] .login-logo,
+[data-theme="dark"] .bot-avatar img {
+  background: #000000 !important;
+  padding: 4px;
+  border-radius: 8px;
+}
+
+/* Ensure no white backgrounds anywhere */
+[data-theme="dark"] * {
+  background-color: inherit;
+}
+
+[data-theme="dark"] div,
+[data-theme="dark"] span,
+[data-theme="dark"] section {
+  background: transparent;
+}
+
+/* Override any remaining white backgrounds */
+[data-theme="dark"] .white-bg,
+[data-theme="dark"] .bg-white,
+[data-theme="dark"] [style*="background: white"],
+[data-theme="dark"] [style*="background-color: white"],
+[data-theme="dark"] [style*="background: #fff"],
+[data-theme="dark"] [style*="background-color: #fff"] {
+  background: #000000 !important;
 }
 
 [data-theme="dark"] .sidebar-logo {
   filter: brightness(1.1) contrast(1.1);
   border-radius: 8px;
-  background: rgba(255, 140, 0, 0.1);
+  background: #000000 !important;
   padding: 4px;
+  border: 1px solid var(--border-primary);
 }
 
 [data-theme="dark"] .quick-actions button,
@@ -138,9 +248,12 @@
 }
 
 [data-theme="dark"] .quick-actions button:hover,
-[data-theme="dark"] .sidebar-nav button:hover {
-  background: var(--btn-hover);
-  color: var(--text-primary);
+[data-theme="dark"] .sidebar-nav button:hover,
+[data-theme="dark"] .quick-action-btn:hover {
+  background: #ff8c00 !important;
+  color: white !important;
+  border-color: #ff8c00 !important;
+  transform: translateY(-1px);
 }
 
 /* Chat Area Dark Theme */
@@ -182,14 +295,14 @@
 }
 
 [data-theme="dark"] .bot-avatar {
-  background: var(--bg-tertiary);
+  background: #000000 !important;
   border: 1px solid var(--border-primary);
   border-radius: 50%;
 }
 
 [data-theme="dark"] .bot-avatar img {
   filter: brightness(1.2) contrast(1.1);
-  background: rgba(255, 140, 0, 0.1);
+  background: #000000 !important;
   border-radius: 50%;
   padding: 2px;
 }
@@ -252,8 +365,26 @@
 }
 
 [data-theme="dark"] .logout-btn:hover {
-  background: var(--btn-hover);
-  color: var(--text-primary);
+  background: #dc3545 !important;
+  color: white !important;
+  border-color: #dc3545 !important;
+  transform: translateY(-1px);
+}
+
+[data-theme="dark"] .sidebar-section {
+  border-top: 1px solid var(--border-primary);
+}
+
+[data-theme="dark"] .history-btn {
+  background: var(--btn-secondary) !important;
+  color: var(--text-secondary) !important;
+  border: 1px solid var(--border-primary) !important;
+}
+
+[data-theme="dark"] .history-btn:hover {
+  background: #ff8c00 !important;
+  color: white !important;
+  border-color: #ff8c00 !important;
 }
 
 /* Theme Toggle Button Styles */
@@ -266,7 +397,7 @@
   border-radius: 8px;
   font-size: 0.9rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
   justify-content: center;

@@ -1,3 +1,12 @@
+/* Global smooth transitions for theme switching */
+* {
+  transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              backdrop-filter 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
 #root {
   max-width: 100%;
   margin: 0;
@@ -10,7 +19,6 @@
   justify-content: flex-end;
   background: url('/images/backgrounds/background_login.png') no-repeat left center;
   background-size: cover;
-  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .login-container {
@@ -249,4 +257,144 @@
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+/* Responsive design for login component */
+@media (max-width: 768px) {
+  #root {
+    justify-content: center;
+    align-items: center;
+    background-position: center;
+  }
+
+  .login-container {
+    margin-right: 0;
+    margin: 1rem;
+    max-width: 90%;
+    padding: 1rem;
+  }
+
+  .login-card {
+    padding: 1rem;
+    max-height: calc(100vh - 2rem);
+    overflow-y: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-container {
+    margin: 0.5rem;
+    max-width: 95%;
+    padding: 0.5rem;
+  }
+
+  .login-card {
+    padding: 0.75rem;
+    max-height: calc(100vh - 1rem);
+  }
+
+  .login-logo {
+    max-width: 80px;
+  }
+
+  .login-card h1 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .login-subtitle {
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+  }
+
+  .form-group input {
+    padding: 0.6rem;
+    font-size: 0.9rem;
+  }
+
+  .login-button, .google-login-button {
+    padding: 0.7rem;
+    font-size: 0.9rem;
+  }
+
+  .divider {
+    margin: 1rem 0;
+  }
+}
+
+/* Height-based responsive adjustments */
+@media (max-height: 700px) {
+  .login-card {
+    max-height: calc(100vh - 1rem);
+    overflow-y: auto;
+  }
+
+  .login-logo {
+    max-width: 80px;
+  }
+
+  .login-card h1 {
+    font-size: 1.6rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .login-subtitle {
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+  }
+
+  .form-group {
+    margin-bottom: 0.6rem;
+  }
+
+  .divider {
+    margin: 1rem 0;
+  }
+}
+
+@media (max-height: 600px) {
+  .login-container {
+    padding: 0.5rem;
+  }
+
+  .login-card {
+    padding: 0.75rem;
+    max-height: calc(100vh - 1rem);
+  }
+
+  .login-logo {
+    max-width: 60px;
+  }
+
+  .login-card h1 {
+    font-size: 1.4rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .login-subtitle {
+    margin-bottom: 0.8rem;
+    font-size: 0.85rem;
+  }
+
+  .form-group {
+    margin-bottom: 0.5rem;
+  }
+
+  .form-group input {
+    padding: 0.6rem;
+    font-size: 0.9rem;
+  }
+
+  .login-button, .google-login-button {
+    padding: 0.6rem;
+    font-size: 0.85rem;
+  }
+
+  .divider {
+    margin: 0.8rem 0;
+  }
+
+  .login-footer {
+    margin-top: 0.8rem;
+  }
 }
