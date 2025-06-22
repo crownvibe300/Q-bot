@@ -259,6 +259,25 @@
   100% { transform: rotate(360deg); }
 }
 
+/* Password step animation */
+.password-step {
+  animation: slideDown 0.3s ease-out;
+  transform-origin: top;
+}
+
+@keyframes slideDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+    max-height: 0;
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    max-height: 100px;
+  }
+}
+
 /* Responsive design for login component */
 @media (max-width: 768px) {
   #root {

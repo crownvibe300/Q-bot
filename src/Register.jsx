@@ -7,10 +7,12 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
 
 function Register() {
   const [formData, setFormData] = useState({
-    email: ''
+    email: '',
+    password: ''
   })
   const [errors, setErrors] = useState({})
   const [isLoading, setIsLoading] = useState(false)
+  const [showPasswordStep, setShowPasswordStep] = useState(false)
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
@@ -27,7 +29,7 @@ function Register() {
     }
   }
 
-  const validateForm = () => {
+  const validateEmail = () => {
     const newErrors = {}
 
     if (!formData.email) {
@@ -39,12 +41,39 @@ function Register() {
     return newErrors
   }
 
+  const validatePassword = () => {
+    const newErrors = {}
+
+    if (!formData.password) {
+      newErrors.password = 'Password is required'
+    } else if (formData.password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters long'
+    }
+
+    return newErrors
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    const newErrors = validateForm()
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors)
+    // Step 1: Email validation and show password field
+    if (!showPasswordStep) {
+      const emailErrors = validateEmail()
+      if (Object.keys(emailErrors).length > 0) {
+        setErrors(emailErrors)
+        return
+      }
+
+      // Email is valid, show password step
+      setErrors({})
+      setShowPasswordStep(true)
+      return
+    }
+
+    // Step 2: Password validation and registration
+    const passwordErrors = validatePassword()
+    if (Object.keys(passwordErrors).length > 0) {
+      setErrors(passwordErrors)
       return
     }
 
@@ -60,11 +89,19 @@ function Register() {
       alert('Registration successful! (This is just a demo)')
 
       // Reset form
-      setFormData({ email: '' })
+      setFormData({ email: '', password: '' })
+      setShowPasswordStep(false)
     } catch (error) {
       setErrors({ general: 'Registration failed. Please try again.' })
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      handleSubmit(e)
     }
   }
 
@@ -112,7 +149,7 @@ function Register() {
             </div>
           )}
           
-          <div className="form-group form-group-last">
+          <div className="form-group">
             <label htmlFor="email">Email Address</label>
             <input
               type="email"
@@ -120,20 +157,46 @@ function Register() {
               name="email"
               value={formData.email}
               onChange={handleInputChange}
+              onKeyPress={handleKeyPress}
               className={errors.email ? 'error' : ''}
-              disabled={isLoading}
+              disabled={isLoading || showPasswordStep}
+              placeholder="Enter your email address"
             />
             {errors.email && (
               <div className="error-message">{errors.email}</div>
             )}
           </div>
+
+          {showPasswordStep && (
+            <div className="form-group form-group-last password-step">
+              <label htmlFor="password">Password</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleInputChange}
+                onKeyPress={handleKeyPress}
+                className={errors.password ? 'error' : ''}
+                disabled={isLoading}
+                placeholder="Enter your password"
+                autoFocus
+              />
+              {errors.password && (
+                <div className="error-message">{errors.password}</div>
+              )}
+            </div>
+          )}
           
           <button
             type="submit"
             className="login-button"
             disabled={isLoading}
           >
-            {isLoading ? 'Creating Account...' : 'Create Account'}
+            {isLoading
+              ? (showPasswordStep ? 'Creating Account...' : 'Validating...')
+              : (showPasswordStep ? 'Create Account' : 'Continue')
+            }
           </button>
         </form>
 
