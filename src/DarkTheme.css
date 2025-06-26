@@ -13,7 +13,9 @@
 .chat-main,
 .chat-messages,
 .login-card,
-.conversation-history-modal {
+.conversation-history-modal,
+.mobile-navbar,
+.mobile-menu {
   transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
               color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
               border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
@@ -107,41 +109,97 @@
 
 /* Dark Theme Overrides */
 [data-theme="dark"] #root {
-  background: var(--bg-primary);
+  background: url('/Q-bot/images/backgrounds/background_login.png') no-repeat left center !important;
+  background-size: cover !important;
+  background-attachment: fixed !important;
   color: var(--text-primary);
 }
 
+/* Login container styling handled by #root background */
 [data-theme="dark"] .login-container {
-  background: url('/images/backgrounds/background_login.png') no-repeat left center;
-  background-size: cover;
+  background: transparent !important;
 }
 
-[data-theme="dark"] .login-card {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+[data-theme="dark"] .login-card,
+body[data-theme="dark"] .login-card,
+.login-card[data-theme="dark"],
+.login-container[data-theme="dark"] .login-card,
+.login-card.dark-theme,
+.login-container.dark-theme .login-card {
+  background: rgba(255, 255, 255, 0.05) !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
 
-[data-theme="dark"] .login-card h1 {
-  color: var(--text-primary);
+[data-theme="dark"] .login-card h1,
+body[data-theme="dark"] .login-card h1,
+.login-card[data-theme="dark"] h1,
+.login-container[data-theme="dark"] .login-card h1,
+.login-card.dark-theme h1,
+.login-container.dark-theme .login-card h1 {
+  color: #ffffff !important;
 }
 
-[data-theme="dark"] .login-subtitle {
-  color: var(--text-secondary);
+[data-theme="dark"] .login-subtitle,
+body[data-theme="dark"] .login-subtitle,
+.login-card[data-theme="dark"] .login-subtitle,
+.login-container[data-theme="dark"] .login-subtitle,
+.login-card.dark-theme .login-subtitle,
+.login-container.dark-theme .login-subtitle {
+  color: #b3b3b3 !important;
 }
 
-[data-theme="dark"] .form-group input {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--border-primary);
-  color: var(--text-primary);
+[data-theme="dark"] .form-group input,
+body[data-theme="dark"] .form-group input,
+.login-card[data-theme="dark"] .form-group input,
+.login-container[data-theme="dark"] .form-group input,
+.login-card.dark-theme .form-group input,
+.login-container.dark-theme .form-group input {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
 }
 
-[data-theme="dark"] .form-group input::placeholder {
-  color: var(--text-muted);
+[data-theme="dark"] .form-group input::placeholder,
+body[data-theme="dark"] .form-group input::placeholder,
+.login-card[data-theme="dark"] .form-group input::placeholder,
+.login-container[data-theme="dark"] .form-group input::placeholder,
+.login-card.dark-theme .form-group input::placeholder,
+.login-container.dark-theme .form-group input::placeholder {
+  color: #666666 !important;
 }
 
-[data-theme="dark"] .form-group label {
-  color: var(--text-secondary);
+[data-theme="dark"] .form-group label,
+body[data-theme="dark"] .form-group label,
+.login-card[data-theme="dark"] .form-group label,
+.login-container[data-theme="dark"] .form-group label,
+.login-card.dark-theme .form-group label,
+.login-container.dark-theme .form-group label {
+  color: #b3b3b3 !important;
+}
+
+/* Dark theme error styles */
+[data-theme="dark"] .form-group input.error {
+  border-color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+}
+
+[data-theme="dark"] .form-group input.error:focus {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+}
+
+[data-theme="dark"] .error-message {
+  color: #fca5a5;
+}
+
+[data-theme="dark"] .error-message.general-error {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+  padding: 0.75rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
 }
 
 [data-theme="dark"] .dashboard-container {
@@ -169,9 +227,37 @@
   color: var(--text-secondary) !important;
 }
 
+[data-theme="dark"] .mobile-navbar {
+  background: rgba(0, 0, 0, 0.8) !important;
+  border-bottom: 1px solid var(--border-primary);
+}
+
+[data-theme="dark"] .mobile-nav-brand {
+  color: var(--text-primary) !important;
+  text-shadow: 0 0 10px rgba(255, 140, 0, 0.3);
+}
+
+[data-theme="dark"] .mobile-menu-toggle {
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .mobile-menu-toggle:hover {
+  color: var(--text-accent) !important;
+}
+
 [data-theme="dark"] .mobile-menu {
   background: #000000 !important;
   border: 1px solid var(--border-primary);
+}
+
+[data-theme="dark"] .mobile-nav-link {
+  color: var(--text-secondary) !important;
+  background: transparent !important;
+}
+
+[data-theme="dark"] .mobile-nav-link:hover {
+  background: var(--bg-tertiary) !important;
+  color: var(--text-accent) !important;
 }
 
 [data-theme="dark"] .sidebar-brand {
@@ -238,6 +324,182 @@
   background: #000000 !important;
   padding: 4px;
   border: 1px solid var(--border-primary);
+}
+
+/* Dark theme animated logout button */
+[data-theme="dark"] .logout-btn-animated {
+  background: #2d2d2d;
+  color: #e0e0e0;
+  border: 1px solid #404040;
+}
+
+[data-theme="dark"] .logout-icon-container {
+  background: #ff4500;
+  color: white;
+}
+
+[data-theme="dark"] .logout-btn-animated:hover .logout-text {
+  color: white;
+}
+
+[data-theme="dark"] .logout-btn-animated:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 140, 0, 0.4);
+}
+
+[data-theme="dark"] .logout-btn-animated:hover .logout-icon-container {
+  background: #ff8c00;
+  color: black;
+}
+
+/* Dark theme login button */
+[data-theme="dark"] .login-button,
+.login-card.dark-theme .login-button,
+.login-container.dark-theme .login-button {
+  background: #2d2d2d !important;
+  color: #e0e0e0 !important;
+  border: 1px solid #404040 !important;
+}
+
+[data-theme="dark"] .login-button:hover:not(:disabled),
+.login-card.dark-theme .login-button:hover:not(:disabled),
+.login-container.dark-theme .login-button:hover:not(:disabled) {
+  background: #ff8c00 !important;
+  color: black !important;
+  border-color: #ff8c00 !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 140, 0, 0.4);
+}
+
+[data-theme="dark"] .login-button:disabled,
+.login-card.dark-theme .login-button:disabled,
+.login-container.dark-theme .login-button:disabled {
+  background: #1a1a1a !important;
+  color: #666 !important;
+  border-color: #333 !important;
+}
+
+/* Dark theme Google login button */
+[data-theme="dark"] .google-login-button,
+.login-card.dark-theme .google-login-button,
+.login-container.dark-theme .google-login-button {
+  background: #2d2d2d !important;
+  color: #e0e0e0 !important;
+  border-color: #404040 !important;
+}
+
+[data-theme="dark"] .google-login-button:hover:not(:disabled),
+.login-card.dark-theme .google-login-button:hover:not(:disabled),
+.login-container.dark-theme .google-login-button:hover:not(:disabled) {
+  background: #ff8c00 !important;
+  color: black !important;
+  border-color: #ff8c00 !important;
+}
+
+/* Dark theme success message */
+[data-theme="dark"] .success-message {
+  background: #1e3a2e;
+  color: #4ade80;
+  border-color: #166534;
+}
+
+/* Dark theme forgot password */
+[data-theme="dark"] .forgot-password {
+  color: #e0e0e0;
+}
+
+[data-theme="dark"] .forgot-password:hover {
+  color: #ff8c00;
+}
+
+/* Dark theme create account link */
+[data-theme="dark"] .create-account-text {
+  color: var(--text-secondary);
+}
+
+[data-theme="dark"] .create-account-link {
+  color: #ff8c00;
+}
+
+[data-theme="dark"] .create-account-link:hover {
+  color: #ff9500;
+  text-decoration: underline;
+}
+
+/* Dark theme development notice */
+[data-theme="dark"] .dev-notice {
+  background: #2d2a1f;
+  color: #fbbf24;
+  border-color: #92400e;
+}
+
+/* Dark theme send button */
+[data-theme="dark"] .send-button {
+  background: #ff8c00;
+  color: white;
+}
+
+[data-theme="dark"] .send-button svg {
+  fill: white;
+  stroke: white;
+  stroke-width: 2.5;
+}
+
+/* Dark theme messageBox */
+[data-theme="dark"] .messageBox {
+  background-color: #2d2d2d;
+  border: 2px solid #404040;
+}
+
+[data-theme="dark"] .messageBox:focus-within {
+  border: 2px solid #ff8c00;
+  box-shadow: 0 0 0 3px rgba(255, 140, 0, 0.2);
+}
+
+[data-theme="dark"] .fileUploadWrapper label:hover {
+  background-color: rgba(255, 140, 0, 0.15);
+}
+
+[data-theme="dark"] .fileUploadWrapper label:hover svg path {
+  stroke: #ff8c00;
+}
+
+[data-theme="dark"] .fileUploadWrapper label:hover svg circle {
+  stroke: #ff8c00;
+  fill: rgba(255, 140, 0, 0.15);
+}
+
+[data-theme="dark"] .tooltip {
+  background-color: #1a1a1a;
+  color: #e0e0e0;
+  border: 1px solid #404040;
+}
+
+[data-theme="dark"] .tooltip::after {
+  border-top-color: #1a1a1a;
+}
+
+[data-theme="dark"] #messageInput {
+  color: #e0e0e0;
+}
+
+[data-theme="dark"] #messageInput::placeholder {
+  color: #b0b0b0;
+}
+
+[data-theme="dark"] #messageInput:focus ~ #sendButton svg path,
+[data-theme="dark"] #messageInput:valid ~ #sendButton svg path {
+  fill: rgba(255, 140, 0, 0.15);
+  stroke: #ff8c00;
+}
+
+[data-theme="dark"] #sendButton:hover {
+  background-color: rgba(255, 140, 0, 0.15);
+}
+
+[data-theme="dark"] #sendButton:hover svg path {
+  fill: rgba(255, 140, 0, 0.15);
+  stroke: #ff8c00;
 }
 
 [data-theme="dark"] .quick-actions button,

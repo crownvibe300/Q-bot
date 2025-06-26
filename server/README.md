@@ -1,17 +1,14 @@
 # Q-bot Backend API
 
-A secure Node.js/Express backend for the Q-bot application with authentication, user management, and Google OAuth integration.
+A lightweight Node.js/Express backend for the Q-bot application. Authentication is handled entirely by Firebase on the frontend.
 
 ## Features
 
-- ✅ **User Registration & Login** with email/password
-- ✅ **JWT Authentication** with secure token management
-- ✅ **Google OAuth 2.0** integration (configurable)
-- ✅ **Password Hashing** with bcrypt
-- ✅ **Input Validation** with express-validator
+- ✅ **Basic API Server** with Express
 - ✅ **Security Middleware** (helmet, rate limiting, CORS)
-- ✅ **MongoDB Integration** with Mongoose
+- ✅ **Health Check Endpoints**
 - ✅ **Error Handling** with proper HTTP status codes
+- 🔥 **Firebase Authentication** (frontend only)
 
 ## Quick Start
 
@@ -26,14 +23,9 @@ Copy `.env.example` to `.env` and configure:
 cp .env.example .env
 ```
 
-Required environment variables:
-- `MONGODB_URI` - MongoDB connection string
-- `JWT_SECRET` - Secret key for JWT tokens
-- `CLIENT_URL` - Frontend URL for CORS
-
-Optional (for Google OAuth):
-- `GOOGLE_CLIENT_ID` - Google OAuth client ID
-- `GOOGLE_CLIENT_SECRET` - Google OAuth client secret
+Optional environment variables:
+- `CLIENT_URL` - Frontend URL for CORS (default: http://localhost:5173)
+- `PORT` - Server port (default: 5000)
 
 ### 3. Start Development Server
 ```bash
@@ -44,124 +36,60 @@ Server runs on `http://localhost:5000`
 
 ## API Endpoints
 
-### Authentication Routes (`/api/auth`)
-
-#### POST `/api/auth/register`
-Register a new user
-```json
-{
-  "email": "user@example.com",
-  "password": "SecurePass123",
-  "firstName": "John",
-  "lastName": "Doe"
-}
-```
-
-#### POST `/api/auth/login`
-Login with email/password
-```json
-{
-  "email": "user@example.com",
-  "password": "SecurePass123"
-}
-```
-
-#### GET `/api/auth/me`
-Get current user (requires authentication)
-```
-Authorization: Bearer <jwt_token>
-```
-
-#### POST `/api/auth/logout`
-Logout user (client-side token removal)
-
-#### GET `/api/auth/google`
-Initiate Google OAuth login
-
-#### GET `/api/auth/google/callback`
-Google OAuth callback
-
-### User Routes (`/api/users`)
-
-#### GET `/api/users/profile`
-Get user profile (requires authentication)
-
-#### PUT `/api/users/profile`
-Update user profile (requires authentication)
-
 ### Health Check
 
 #### GET `/api/health`
 Server health status
-
-## Authentication
-
-The API uses JWT (JSON Web Tokens) for authentication. Include the token in requests:
-
-```
-Authorization: Bearer <your_jwt_token>
-```
-
-## Database Schema
-
-### User Model
-```javascript
+```json
 {
-  email: String (required, unique),
-  password: String (hashed),
-  firstName: String,
-  lastName: String,
-  googleId: String (for OAuth users),
-  avatar: String,
-  isEmailVerified: Boolean,
-  lastLogin: Date,
-  isActive: Boolean,
-  role: String (user/admin),
-  createdAt: Date,
-  updatedAt: Date
+  "status": "OK",
+  "message": "Q-bot server is running (Firebase Auth Only)",
+  "timestamp": "2024-01-01T00:00:00.000Z",
+  "authentication": "Firebase Authentication"
 }
 ```
 
+#### GET `/api/status`
+API status information
+```json
+{
+  "success": true,
+  "message": "Q-bot API is running",
+  "version": "1.0.0",
+  "authentication": "Firebase only"
+}
+```
+
+## Authentication
+
+🔥 **Authentication is handled entirely by Firebase on the frontend.**
+
+- No backend authentication required
+- No JWT tokens or user sessions on the server
+- All user management is done through Firebase Authentication
+- User data is stored in Firebase Firestore
+
 ## Security Features
 
-- **Password Hashing**: bcrypt with salt rounds
 - **Rate Limiting**: 100 requests per 15 minutes per IP
 - **CORS Protection**: Configured for frontend domain
 - **Helmet**: Security headers
-- **Input Validation**: Email format, password strength
-- **JWT Expiration**: 7-day token expiry
-
-## Google OAuth Setup
-
-1. Go to [Google Cloud Console](https://console.cloud.google.com/)
-2. Create a new project or select existing
-3. Enable Google+ API
-4. Create OAuth 2.0 credentials
-5. Add authorized redirect URI: `http://localhost:5000/api/auth/google/callback`
-6. Update `.env` with client ID and secret
+- **Firebase Authentication**: Secure authentication handled by Firebase
 
 ## Development
 
 ### Scripts
 - `npm run dev` - Start with nodemon (auto-restart)
 - `npm start` - Start production server
-- `node test-api.js` - Test API health endpoint
+- `npm run https` - Start HTTPS server for GitHub Pages
 
 ### Project Structure
 ```
 server/
-├── config/
-│   └── passport.js       # Passport strategies
-├── middleware/
-│   └── auth.js          # JWT authentication
-├── models/
-│   └── User.js          # User schema
-├── routes/
-│   ├── auth.js          # Authentication routes
-│   └── users.js         # User management routes
 ├── .env                 # Environment variables
 ├── .env.example         # Environment template
-├── index.js             # Main server file
+├── index.js             # Main HTTP server
+├── index-https.js       # HTTPS server for GitHub Pages
 └── package.json         # Dependencies
 ```
 

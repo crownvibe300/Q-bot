@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { conversationAPI } from '../services/api';
+import { firestoreService } from '../services/firestoreService';
 import './ConversationHistory.css';
 
 function ConversationHistory({ isOpen, onClose, onSelectConversation }) {
@@ -61,12 +61,13 @@ function ConversationHistory({ isOpen, onClose, onSelectConversation }) {
   const loadConversations = async () => {
     setLoading(true);
     setError('');
-    
+
     try {
-      // For now, use mock data. Replace with actual API call:
-      // const response = await conversationAPI.getHistory();
-      // setConversations(response.conversations || []);
-      
+      // For now, use mock data until user authentication is implemented
+      // TODO: Replace with Firebase Firestore call:
+      // const response = await firestoreService.conversations.getByUser(userId);
+      // setConversations(response.data || []);
+
       // Simulate API delay
       await new Promise(resolve => setTimeout(resolve, 500));
       setConversations(mockConversations);

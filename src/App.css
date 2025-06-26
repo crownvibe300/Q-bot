@@ -7,6 +7,16 @@
               backdrop-filter 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
+/* Ensure background image is always present */
+html, body {
+  background: url('/Q-bot/images/backgrounds/background_login.png') no-repeat left center !important;
+  background-size: cover !important;
+  background-attachment: fixed !important;
+  min-height: 100vh !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
 #root {
   max-width: 100%;
   margin: 0;
@@ -17,8 +27,38 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  background: url('/images/backgrounds/background_login.png') no-repeat left center;
-  background-size: cover;
+}
+
+/* Default background for all themes */
+#root {
+  background: url('/Q-bot/images/backgrounds/background_login.png') no-repeat left center !important;
+  background-size: cover !important;
+  background-attachment: fixed !important;
+}
+
+/* Ensure background persists in light theme */
+[data-theme="light"] #root,
+#root[data-theme="light"],
+html[data-theme="light"] #root {
+  background: url('/Q-bot/images/backgrounds/background_login.png') no-repeat left center !important;
+  background-size: cover !important;
+  background-attachment: fixed !important;
+}
+
+/* Ensure background persists in dark theme */
+[data-theme="dark"] #root,
+#root[data-theme="dark"],
+html[data-theme="dark"] #root {
+  background: url('/Q-bot/images/backgrounds/background_login.png') no-repeat left center !important;
+  background-size: cover !important;
+  background-attachment: fixed !important;
+}
+
+/* Fallback for when theme attribute is not yet set */
+#root:not([data-theme]) {
+  background: url('/Q-bot/images/backgrounds/background_login.png') no-repeat left center !important;
+  background-size: cover !important;
+  background-attachment: fixed !important;
 }
 
 .login-container {
@@ -26,10 +66,12 @@
   max-width: 324px;
   padding: 1.62rem;
   margin-right: 5rem;
-  max-height: 100vh;
-  overflow-y: auto;
+  min-height: 100vh;
+  overflow: visible;
   display: flex;
   align-items: center;
+  justify-content: center;
+  background: transparent !important;
 }
 
 .login-card {
@@ -42,8 +84,7 @@
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
   text-align: center;
   width: 100%;
-  max-height: calc(100vh - 3.24rem);
-  overflow-y: auto;
+  overflow: visible;
 }
 
 .logo-container {
@@ -140,7 +181,7 @@
 
 .login-button {
   width: 100%;
-  background: linear-gradient(135deg, #ff8c00 0%, #ff6600 100%);
+  background: black;
   color: white;
   border: none;
   padding: 0.875rem;
@@ -148,11 +189,15 @@
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   margin-top: 0.5rem;
+  position: relative;
+  overflow: hidden;
 }
 
 .login-button:hover:not(:disabled) {
+  background: #ff8c00;
+  color: black;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(255, 140, 0, 0.4);
 }
@@ -169,15 +214,137 @@
 }
 
 .forgot-password {
+  background: none;
+  border: none;
   color: black;
   text-decoration: none;
   font-size: 0.9rem;
+  cursor: pointer;
   transition: color 0.3s ease;
 }
 
 .forgot-password:hover {
   color: #ff8c00;
   text-decoration: underline;
+}
+
+.forgot-password:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Success Message */
+.success-message {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+  border-radius: 6px;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+/* Development Notice */
+.dev-notice {
+  background: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeaa7;
+  border-radius: 6px;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  font-size: 0.85rem;
+  text-align: center;
+  line-height: 1.4;
+}
+
+/* Error Boundary */
+.error-boundary {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 2rem;
+}
+
+.error-boundary-content {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 600px;
+  width: 100%;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.error-boundary h1 {
+  color: #ff6b6b;
+  margin-bottom: 1rem;
+  font-size: 2rem;
+}
+
+.error-details {
+  text-align: left;
+  margin: 2rem 0;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.error-details ol {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+}
+
+.error-details li {
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.error-details a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.error-details a:hover {
+  text-decoration: underline;
+}
+
+.retry-button {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.retry-button:hover {
+  background: #218838;
+}
+
+.error-technical {
+  margin-top: 2rem;
+  text-align: left;
+}
+
+.error-technical summary {
+  cursor: pointer;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+.error-technical pre {
+  background: #f1f3f4;
+  padding: 1rem;
+  border-radius: 4px;
+  overflow-x: auto;
+  font-size: 0.85rem;
+  margin: 0.5rem 0;
 }
 
 .create-account-section {
@@ -295,8 +462,8 @@
 
   .login-card {
     padding: 1rem;
-    max-height: calc(100vh - 2rem);
-    overflow-y: auto;
+    max-height: none;
+    overflow-y: visible;
   }
 }
 
@@ -309,7 +476,7 @@
 
   .login-card {
     padding: 0.75rem;
-    max-height: calc(100vh - 1rem);
+    max-height: none;
   }
 
   .login-logo {
@@ -344,8 +511,8 @@
 /* Height-based responsive adjustments */
 @media (max-height: 700px) {
   .login-card {
-    max-height: calc(100vh - 1rem);
-    overflow-y: auto;
+    max-height: none;
+    overflow-y: visible;
   }
 
   .login-logo {
@@ -378,7 +545,7 @@
 
   .login-card {
     padding: 0.75rem;
-    max-height: calc(100vh - 1rem);
+    max-height: none;
   }
 
   .login-logo {

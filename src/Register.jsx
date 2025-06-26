@@ -1,32 +1,64 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from './context/AuthContext'
+import { useTheme } from './context/ThemeContext'
 import './App.css'
+import './DarkTheme.css'
 
 function Register() {
-  const { register, isLoading, error, clearError, isAuthenticated, googleLogin } = useAuth()
+  const { register, isLoading: authLoading, error: authError, clearError, isAuthenticated, googleLogin } = useAuth()
+  const { theme } = useTheme()
   const navigate = useNavigate()
-
   const [formData, setFormData] = useState({
     email: '',
-    password: ''
+    password: '',
+    firstName: '' // Optional field, will default to 'John' on backend if empty
   })
   const [errors, setErrors] = useState({})
   const [showPasswordStep, setShowPasswordStep] = useState(false)
 
+  // Ensure theme is applied on component mount
+  useEffect(() => {
+    // Force theme application to document root
+    document.documentElement.setAttribute('data-theme', theme)
+    // Also set it on the body for extra coverage
+    document.body.setAttribute('data-theme', theme)
+    // Force a style recalculation
+    document.documentElement.style.setProperty('--force-recalc', Math.random().toString())
+  }, [theme])
+
+  // Additional effect to ensure theme is applied immediately
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('qbot-theme') || 'light'
+    document.documentElement.setAttribute('data-theme', savedTheme)
+    document.body.setAttribute('data-theme', savedTheme)
+  }, [])
+
   // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/dashboard')
+      navigate('/dashboard', { replace: true })
     }
   }, [isAuthenticated, navigate])
 
   // Handle auth errors
   useEffect(() => {
-    if (error) {
-      setErrors({ general: error })
+    if (authError) {
+      if (authError.includes('already exists') || authError.includes('already registered')) {
+        setErrors({
+          email: 'An account with this email already exists. Please try logging in instead.'
+        })
+        setShowPasswordStep(false)
+      } else if (authError.includes('password')) {
+        setErrors({ password: authError })
+      } else if (authError.includes('email')) {
+        setErrors({ email: authError })
+        setShowPasswordStep(false)
+      } else {
+        setErrors({ general: authError })
+      }
     }
-  }, [error])
+  }, [authError])
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
@@ -40,6 +72,10 @@ function Register() {
         ...prev,
         [name]: ''
       }))
+    }
+    // Clear auth error when user starts typing
+    if (authError) {
+      clearError()
     }
   }
 
@@ -62,8 +98,6 @@ function Register() {
       newErrors.password = 'Password is required'
     } else if (formData.password.length < 6) {
       newErrors.password = 'Password must be at least 6 characters long'
-    } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.password)) {
-      newErrors.password = 'Password must contain at least one uppercase letter, one lowercase letter, and one number'
     }
 
     return newErrors
@@ -93,43 +127,22 @@ function Register() {
       return
     }
 
-    // Clear any previous errors
-    clearError()
     setErrors({})
+    clearError()
 
     try {
-      // Use AuthContext register function
+      // Use the auth context register method
       await register({
         email: formData.email,
-        password: formData.password
+        password: formData.password,
+        firstName: formData.firstName || undefined // Let backend handle default
       })
 
-      // Registration successful - AuthContext handles token storage
-      console.log('Registration successful!')
-
-      // Reset form
-      setFormData({ email: '', password: '' })
-      setShowPasswordStep(false)
-
-      // Navigate to dashboard
-      navigate('/dashboard')
-
+      // Registration successful - navigation will be handled by useEffect
+      console.log('Registration successful')
     } catch (error) {
       console.error('Registration error:', error)
-
-      // Handle specific validation errors
-      if (error.message.includes('validation')) {
-        // Try to parse validation errors from the error message
-        if (error.message.includes('Password must contain')) {
-          setErrors({ password: error.message })
-        } else if (error.message.includes('email')) {
-          setErrors({ email: error.message })
-        } else {
-          setErrors({ general: error.message })
-        }
-      } else {
-        setErrors({ general: error.message || 'Registration failed. Please try again.' })
-      }
+      // Error handling is done in useEffect for authError
     }
   }
 
@@ -140,19 +153,38 @@ function Register() {
     }
   }
 
-  const handleGoogleLogin = () => {
-    clearError()
-    setErrors({})
-    googleLogin()
+  const handleGoogleLogin = async () => {
+    try {
+      setErrors({})
+      clearError()
+
+      // Use the auth context Google login method
+      await googleLogin()
+
+    } catch (error) {
+      console.error('Google login error:', error)
+      setErrors({
+        general: 'Google login failed. Please try again or use email registration.'
+      })
+    }
   }
 
   return (
-    <div className="login-container">
-      <div className="login-card">
+    <div className={`login-container ${theme === 'dark' ? 'dark-theme' : ''}`} data-theme={theme}>
+      <div
+        className={`login-card ${theme === 'dark' ? 'dark-theme' : ''}`}
+        data-theme={theme}
+        style={theme === 'dark' ? {
+          background: 'rgba(255, 255, 255, 0.05)',
+          backdropFilter: 'blur(20px)',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
+          color: '#ffffff'
+        } : {}}
+      >
         <div className="logo-container">
-          <img src="./images/logos/Q-bot_logo.png" alt="Q-bot Logo" className="login-logo" />
+          <img src="/Q-bot/images/logos/Q-bot_logo.png" alt="Q-bot Logo" className="login-logo" />
         </div>
-        <h1>Create Account</h1>
+        <h1 style={theme === 'dark' ? { color: '#ffffff' } : {}}>Create Account</h1>
         
         <form onSubmit={handleSubmit} className="login-form">
           {errors.general && (
@@ -171,7 +203,7 @@ function Register() {
               onChange={handleInputChange}
               onKeyPress={handleKeyPress}
               className={errors.email ? 'error' : ''}
-              disabled={isLoading || showPasswordStep}
+              disabled={authLoading || showPasswordStep}
               placeholder="Enter your email address"
             />
             {errors.email && (
@@ -190,7 +222,7 @@ function Register() {
                 onChange={handleInputChange}
                 onKeyPress={handleKeyPress}
                 className={errors.password ? 'error' : ''}
-                disabled={isLoading}
+                disabled={authLoading}
                 placeholder="Enter your password"
                 autoFocus
               />
@@ -203,9 +235,9 @@ function Register() {
           <button
             type="submit"
             className="login-button"
-            disabled={isLoading}
+            disabled={authLoading}
           >
-            {isLoading
+            {authLoading
               ? (showPasswordStep ? 'Creating Account...' : 'Validating...')
               : (showPasswordStep ? 'Create Account' : 'Continue')
             }
@@ -217,7 +249,7 @@ function Register() {
         <button
           className="google-login-button"
           onClick={handleGoogleLogin}
-          disabled={isLoading}
+          disabled={authLoading}
         >
           <svg className="google-icon" viewBox="0 0 24 24" width="20" height="20">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useAuth } from './context/AuthContext'
 import { useTheme } from './context/ThemeContext'
 import ConversationHistory from './components/ConversationHistory'
+import Settings from './components/Settings'
 import './Dashboard.css'
 import './DarkTheme.css'
 
@@ -17,8 +18,12 @@ function Dashboard() {
       timestamp: new Date()
     }
   ])
+
+  // Mobile menu state
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [inputMessage, setInputMessage] = useState('')
   const [showHistory, setShowHistory] = useState(false)
+  const [showSettings, setShowSettings] = useState(false)
 
   const handleSendMessage = (e) => {
     e.preventDefault()
@@ -67,6 +72,14 @@ function Dashboard() {
     setShowHistory(false)
   }
 
+  const handleShowSettings = () => {
+    setShowSettings(true)
+  }
+
+  const handleCloseSettings = () => {
+    setShowSettings(false)
+  }
+
   const handleSelectConversation = (conversation) => {
     // Load the selected conversation into the current chat
     console.log('Loading conversation:', conversation)
@@ -76,12 +89,120 @@ function Dashboard() {
 
   return (
     <div className="dashboard-container">
+      {/* Mobile Navigation Bar */}
+      <nav className="mobile-navbar">
+        <div className="mobile-nav-left">
+          <div className="mobile-logo-section">
+            <img src="/Q-bot/images/logos/Q-bot_logo.png" alt="Q-bot Logo" className="mobile-nav-logo" />
+            <span className="mobile-nav-brand">Q-bot</span>
+          </div>
+        </div>
+        <div className="mobile-nav-right">
+          <button
+            className="mobile-menu-toggle"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label="Toggle mobile menu"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              {isMobileMenuOpen ? (
+                // X icon when menu is open
+                <>
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </>
+              ) : (
+                // Hamburger icon when menu is closed
+                <>
+                  <line x1="3" y1="6" x2="21" y2="6"></line>
+                  <line x1="3" y1="12" x2="21" y2="12"></line>
+                  <line x1="3" y1="18" x2="21" y2="18"></line>
+                </>
+              )}
+            </svg>
+          </button>
+        </div>
+      </nav>
+
+      {/* Mobile Menu Overlay */}
+      <div className={`mobile-menu-overlay ${isMobileMenuOpen ? 'open' : ''}`} onClick={() => setIsMobileMenuOpen(false)}>
+        <ul className="mobile-menu" onClick={(e) => e.stopPropagation()}>
+          <li className="mobile-nav-item">
+            <button className="mobile-nav-link" onClick={() => { handleFileUpload(); setIsMobileMenuOpen(false); }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66L9.64 16.2a2 2 0 0 1-2.83-2.83l8.49-8.49"/>
+              </svg>
+              Upload File
+            </button>
+          </li>
+          <li className="mobile-nav-item">
+            <button className="mobile-nav-link" onClick={() => setIsMobileMenuOpen(false)}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14,2 14,8 20,8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10,9 9,9 8,9"></polyline>
+              </svg>
+              Analyze Text
+            </button>
+          </li>
+          <li className="mobile-nav-item">
+            <button className="mobile-nav-link" onClick={() => { handleShowSettings(); setIsMobileMenuOpen(false); }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+              Settings
+            </button>
+          </li>
+          <li className="mobile-nav-item">
+            <button className="mobile-nav-link" onClick={() => setIsMobileMenuOpen(false)}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+              </svg>
+              Help & Tips
+            </button>
+          </li>
+          <li className="mobile-nav-item">
+            <button className="mobile-nav-link" onClick={() => { handleShowHistory(); setIsMobileMenuOpen(false); }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M3 3v5h5"></path>
+                <path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"></path>
+                <path d="M12 7v5l4 2"></path>
+              </svg>
+              History
+            </button>
+          </li>
+          <li className="mobile-nav-item">
+            <button className="mobile-nav-link" onClick={() => { toggleTheme(); setIsMobileMenuOpen(false); }}>
+              {isDark ? (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="5"></circle>
+                  <line x1="12" y1="1" x2="12" y2="3"></line>
+                  <line x1="12" y1="21" x2="12" y2="23"></line>
+                  <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                  <line x1="19.78" y1="4.22" x2="18.36" y2="5.64"></line>
+                  <line x1="1" y1="12" x2="3" y2="12"></line>
+                  <line x1="21" y1="12" x2="23" y2="12"></line>
+                  <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                  <line x1="19.78" y1="19.78" x2="18.36" y2="18.36"></line>
+                </svg>
+              ) : (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
+              )}
+              {isDark ? 'Light Mode' : 'Dark Mode'}
+            </button>
+          </li>
+        </ul>
+      </div>
 
       <main className="chat-container">
         <div className="chat-sidebar">
           <div className="sidebar-header">
             <div className="logo-section">
-              <img src="./images/logos/Q-bot_logo.png" alt="Q-bot Logo" className="sidebar-logo" />
+              <img src="/Q-bot/images/logos/Q-bot_logo.png" alt="Q-bot Logo" className="sidebar-logo" />
               <span className="sidebar-brand">Q-bot</span>
             </div>
           </div>
@@ -104,7 +225,7 @@ function Dashboard() {
                 </svg>
                 Analyze Text
               </button>
-              <button className="quick-action-btn">
+              <button className="quick-action-btn" onClick={handleShowSettings}>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <circle cx="12" cy="12" r="3"></circle>
                   <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
@@ -151,13 +272,25 @@ function Dashboard() {
               )}
               {isDark ? 'Light Mode' : 'Dark Mode'}
             </button>
-            <button className="logout-btn" onClick={handleLogout}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                <polyline points="16,17 21,12 16,7"></polyline>
-                <line x1="21" y1="12" x2="9" y2="12"></line>
-              </svg>
-              Logout
+            <button className="logout-btn-animated" onClick={handleLogout}>
+              <div className="logout-icon-container">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 1024 1024"
+                  height="20px"
+                  width="20px"
+                >
+                  <path
+                    d="M224 480h640a32 32 0 1 1 0 64H224a32 32 0 0 1 0-64z"
+                    fill="currentColor"
+                  ></path>
+                  <path
+                    d="m237.248 512 265.408 265.344a32 32 0 0 1-45.312 45.312l-288-288a32 32 0 0 1 0-45.312l288-288a32 32 0 1 1 45.312 45.312L237.248 512z"
+                    fill="currentColor"
+                  ></path>
+                </svg>
+              </div>
+              <p className="logout-text">Logout</p>
             </button>
           </div>
         </div>
@@ -169,7 +302,7 @@ function Dashboard() {
                 <div className="message-content">
                   {message.type === 'bot' && (
                     <div className="bot-avatar">
-                      <img src="./images/logos/Q-bot_logo.png" alt="Q-bot" />
+                      <img src="/Q-bot/images/logos/Q-bot_logo.png" alt="Q-bot" />
                     </div>
                   )}
                   <div className="message-bubble">
@@ -185,18 +318,56 @@ function Dashboard() {
 
           <div className="chat-input-area">
             <form onSubmit={handleSendMessage} className="message-form">
-              <div className="input-container">
+              <div className="messageBox">
+                <div className="fileUploadWrapper">
+                  <label htmlFor="file">
+                    <svg viewBox="0 0 337 337" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <circle
+                        cx="168.5"
+                        cy="168.5"
+                        r="158.5"
+                        fill="none"
+                        stroke="#6c6c6c"
+                        strokeWidth="20"
+                      />
+                      <path
+                        d="M167.759 79V259"
+                        stroke="#6c6c6c"
+                        strokeWidth="25"
+                        strokeLinecap="round"
+                      />
+                      <path
+                        d="M79 167.138H259"
+                        stroke="#6c6c6c"
+                        strokeWidth="25"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                    <span className="tooltip">Add an image</span>
+                  </label>
+                  <input name="file" id="file" type="file" />
+                </div>
                 <input
+                  id="messageInput"
                   type="text"
                   value={inputMessage}
                   onChange={(e) => setInputMessage(e.target.value)}
-                  placeholder="Type your message..."
-                  className="message-input"
+                  placeholder="Message..."
+                  required
                 />
-                <button type="submit" className="send-button">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <line x1="22" y1="2" x2="11" y2="13"></line>
-                    <polygon points="22,2 15,22 11,13 2,9 22,2"></polygon>
+                <button id="sendButton" type="submit">
+                  <svg viewBox="0 0 664 663" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      d="M646.293 331.888L17.7538 17.6187L155.245 331.888M646.293 331.888L17.753 646.157L155.245 331.888M646.293 331.888L318.735 330.228L155.245 331.888"
+                      fill="none"
+                    />
+                    <path
+                      d="M646.293 331.888L17.7538 17.6187L155.245 331.888M646.293 331.888L17.753 646.157L155.245 331.888M646.293 331.888L318.735 330.228L155.245 331.888"
+                      stroke="#6c6c6c"
+                      strokeWidth="33.67"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
                   </svg>
                 </button>
               </div>
@@ -209,6 +380,11 @@ function Dashboard() {
         isOpen={showHistory}
         onClose={handleCloseHistory}
         onSelectConversation={handleSelectConversation}
+      />
+
+      <Settings
+        isOpen={showSettings}
+        onClose={handleCloseSettings}
       />
     </div>
   )

@@ -113,7 +113,7 @@
   border-radius: 6px;
   cursor: pointer;
   font-size: 0.9rem;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background-color 1.3s ease, color 0.3s ease;
 }
 
 .logout-btn:hover {
@@ -258,6 +258,91 @@
   transform: translateY(-1px);
 }
 
+/* Animated logout button */
+.logout-btn-animated {
+  background: white;
+  color: black;
+  border: none;
+  width: 100%;
+  border-radius: 16px;
+  height: 56px;
+  position: relative;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  overflow: hidden;
+}
+
+.logout-icon-container {
+  background: black;
+  border-radius: 12px;
+  height: 48px;
+  width: 25%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  left: 4px;
+  top: 4px;
+  z-index: 10;
+  transition: width 1s cubic-bezier(0.25, 0.46, 0.45, 0.94), background-color 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  color: #ff8c00;
+}
+
+.logout-btn-animated:hover .logout-icon-container {
+  width: calc(100% - 8px);
+  transition: 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.logout-text {
+  margin: 0;
+  transform: translateX(8px);
+  transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.logout-btn-animated:hover .logout-text {
+  color: white;
+  transform: translateX(0);
+}
+
+.logout-btn-animated:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.logout-btn-animated:hover .logout-icon-container {
+  background: black;
+  color: #ff8c00;
+}
+
+/* Light theme logout button - black with orange arrow */
+[data-theme="light"] .logout-btn-animated,
+:root:not([data-theme]) .logout-btn-animated {
+  background: white;
+  color: black;
+}
+
+[data-theme="light"] .logout-icon-container,
+:root:not([data-theme]) .logout-icon-container {
+  background: black;
+  color: #ff8c00;
+}
+
+[data-theme="light"] .logout-btn-animated:hover,
+:root:not([data-theme]) .logout-btn-animated:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="light"] .logout-btn-animated:hover .logout-icon-container,
+:root:not([data-theme]) .logout-btn-animated:hover .logout-icon-container {
+  background: black;
+  color: #ff8c00;
+}
+
 /* Main Chat Area */
 .chat-main {
   flex: 1;
@@ -353,73 +438,219 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
-}
-
-.file-upload-section {
-  display: flex;
-  justify-content: center;
-}
-
-.file-upload-btn {
-  background: #f8f9fa;
-  border: 2px dashed #dee2e6;
-  color: #6c757d;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.9rem;
-  transition: all 0.3s ease;
-}
-
-.file-upload-btn:hover {
-  background: #ff8c00;
-  border-color: #ff8c00;
-  color: white;
+  transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .message-form {
   width: 100%;
-}
-
-.input-container {
   display: flex;
-  gap: 0.5rem;
-  align-items: center;
+  justify-content: center;
 }
 
-.message-input {
-  flex: 1;
-  padding: 0.75rem 1rem;
-  border: 2px solid #e9ecef;
-  border-radius: 25px;
-  font-size: 1rem;
-  outline: none;
-  transition: border-color 0.3s ease;
-}
-
-.message-input:focus {
-  border-color: #ff8c00;
-}
-
-.send-button {
-  background: #ff8c00;
-  border: none;
-  color: white;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  cursor: pointer;
+/* New MessageBox Design */
+.messageBox {
+  width: fit-content;
+  min-width: 400px;
+  height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.3s ease;
+  background-color: #f8f9fa;
+  padding: 0 15px;
+  border-radius: 12px;
+  border: 2px solid #e9ecef;
+  transition: all 0.3s ease;
 }
 
-.send-button:hover {
-  background: #e67e00;
+.messageBox:focus-within {
+  border: 2px solid #ff8c00;
+  box-shadow: 0 0 0 3px rgba(255, 140, 0, 0.1);
+}
+
+.fileUploadWrapper {
+  width: fit-content;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#file {
+  display: none;
+}
+
+.fileUploadWrapper label {
+  cursor: pointer;
+  width: fit-content;
+  height: fit-content;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 5px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.fileUploadWrapper label svg {
+  height: 20px;
+  width: 20px;
+}
+
+.fileUploadWrapper label svg path {
+  transition: all 0.3s ease;
+}
+
+.fileUploadWrapper label svg circle {
+  transition: all 0.3s ease;
+}
+
+.fileUploadWrapper label:hover {
+  background-color: rgba(255, 140, 0, 0.1);
+}
+
+.fileUploadWrapper label:hover svg path {
+  stroke: #ff8c00;
+}
+
+.fileUploadWrapper label:hover svg circle {
+  stroke: #ff8c00;
+  fill: rgba(255, 140, 0, 0.1);
+}
+
+.fileUploadWrapper label:hover .tooltip {
+  display: block;
+  opacity: 1;
+}
+
+.tooltip {
+  position: absolute;
+  top: -45px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: none;
+  opacity: 0;
+  color: white;
+  font-size: 12px;
+  white-space: nowrap;
+  background-color: #333;
+  padding: 8px 12px;
+  border-radius: 6px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
+
+.tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: #333;
+}
+
+#messageInput {
+  flex: 1;
+  min-width: 300px;
+  height: 100%;
+  background-color: transparent;
+  outline: none;
+  border: none;
+  padding: 0 15px;
+  color: #333;
+  font-size: 1rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#messageInput::placeholder {
+  color: #6c757d;
+}
+
+#messageInput:focus ~ #sendButton svg path,
+#messageInput:valid ~ #sendButton svg path {
+  fill: rgba(255, 140, 0, 0.1);
+  stroke: #ff8c00;
+}
+
+#sendButton {
+  width: fit-content;
+  height: 100%;
+  background-color: transparent;
+  outline: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 5px;
+  border-radius: 6px;
+}
+
+#sendButton svg {
+  height: 20px;
+  width: 20px;
+  transition: all 0.3s ease;
+}
+
+#sendButton svg path {
+  transition: all 0.3s ease;
+}
+
+#sendButton:hover {
+  background-color: rgba(255, 140, 0, 0.1);
+}
+
+#sendButton:hover svg path {
+  fill: rgba(255, 140, 0, 0.1);
+  stroke: #ff8c00;
+}
+
+/* Mobile Navigation Bar */
+.mobile-navbar {
+  display: none;
+  background: rgba(255, 140, 0, 0.25);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 1rem;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.mobile-nav-left {
+  display: flex;
+  align-items: center;
+}
+
+.mobile-logo-section {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.mobile-nav-logo {
+  width: 32px;
+  height: auto;
+}
+
+.mobile-nav-brand {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: silver;
+  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.mobile-nav-right {
+  display: flex;
+  align-items: center;
 }
 
 /* Mobile Menu Styles */
@@ -481,14 +712,21 @@
 }
 
 .mobile-nav-link {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
   padding: 1rem 1.5rem;
   color: #333;
+  background: none;
+  border: none;
   text-decoration: none;
   font-size: 1rem;
   font-weight: 500;
   transition: background-color 0.3s ease;
   border-left: 3px solid transparent;
+  cursor: pointer;
+  text-align: left;
 }
 
 .mobile-nav-link:hover {
@@ -519,13 +757,9 @@
 
 /* Mobile Responsive Design */
 @media (max-width: 768px) {
-  .navbar {
-    padding: 0.75rem 1rem;
-  }
-
-  /* Hide desktop menu, show mobile toggle */
-  .desktop-menu {
-    display: none;
+  /* Show mobile navbar on mobile */
+  .mobile-navbar {
+    display: flex;
   }
 
   .mobile-menu-toggle {
@@ -570,18 +804,22 @@
     font-size: 0.95rem;
   }
 
-  .input-container {
-    gap: 0.75rem;
+  .messageBox {
+    min-width: 300px;
+    height: 45px;
+    padding: 0 12px;
   }
 
-  .message-input {
+  #messageInput {
+    min-width: 200px;
     font-size: 16px; /* Prevents zoom on iOS */
-    padding: 0.75rem 1rem;
+    padding: 0 12px;
   }
 
-  .send-button {
-    width: 42px;
-    height: 42px;
+  .fileUploadWrapper label svg,
+  #sendButton svg {
+    height: 18px;
+    width: 18px;
   }
 
   .file-upload-btn {
@@ -635,17 +873,21 @@
     font-size: 0.85rem;
   }
 
-  .input-container {
-    gap: 0.5rem;
+  .messageBox {
+    min-width: 280px;
+    height: 42px;
+    padding: 0 10px;
   }
 
-  .message-input {
-    padding: 0.6rem 0.8rem;
+  #messageInput {
+    min-width: 180px;
     font-size: 16px;
+    padding: 0 10px;
   }
 
-  .send-button {
-    width: 38px;
-    height: 38px;
+  .fileUploadWrapper label svg,
+  #sendButton svg {
+    height: 16px;
+    width: 16px;
   }
 }

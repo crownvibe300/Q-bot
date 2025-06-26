@@ -3,8 +3,6 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
-const passport = require('./config/passport');
-const database = require('./config/database');
 
 // Load environment variables
 dotenv.config();
@@ -27,6 +25,7 @@ app.use(limiter);
 app.use(cors({
   origin: [
     process.env.CLIENT_URL || 'http://localhost:5173',
+    'http://localhost:5174',
     'https://crownvibe300.github.io',
     'http://localhost:3000'
   ],
@@ -39,27 +38,23 @@ app.use(cors({
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-// Passport middleware
-app.use(passport.initialize());
-
-// Database initialization
-database.initialize()
-  .then(() => console.log('SQLite database connected successfully'))
-  .catch(err => {
-    console.error('Database connection error:', err);
-    process.exit(1);
-  });
-
-// Routes
-app.use('/api/auth', require('./routes/auth'));
-app.use('/api/users', require('./routes/users'));
-
-// Health check endpoint
+// API Routes
 app.get('/api/health', (req, res) => {
-  res.json({ 
-    status: 'OK', 
-    message: 'Q-bot server is running',
-    timestamp: new Date().toISOString()
+  res.json({
+    status: 'OK',
+    message: 'Q-bot server is running (Firebase Auth Only)',
+    timestamp: new Date().toISOString(),
+    authentication: 'Firebase Authentication'
+  });
+});
+
+// Simple API endpoint for testing
+app.get('/api/status', (req, res) => {
+  res.json({
+    success: true,
+    message: 'Q-bot API is running',
+    version: '1.0.0',
+    authentication: 'Firebase only'
   });
 });
 
@@ -85,7 +80,6 @@ const server = app.listen(PORT, () => {
 // Graceful shutdown
 process.on('SIGINT', async () => {
   console.log('\nShutting down gracefully...');
-  await database.close();
   server.close(() => {
     console.log('Server closed');
     process.exit(0);
@@ -94,7 +88,6 @@ process.on('SIGINT', async () => {
 
 process.on('SIGTERM', async () => {
   console.log('SIGTERM received, shutting down gracefully...');
-  await database.close();
   server.close(() => {
     console.log('Server closed');
     process.exit(0);

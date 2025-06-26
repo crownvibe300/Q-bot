@@ -1,5 +1,5 @@
 import { createContext, useContext, useReducer, useEffect } from 'react';
-import { authAPI } from '../services/api';
+import { firebaseAuthService } from '../services/firebaseAuth';
 
 // Initial state
 const initialState = {
@@ -100,37 +100,77 @@ const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
-  // Load user from localStorage on app start
+  // Firebase auth state listener
   useEffect(() => {
-    const loadStoredUser = () => {
-      const token = authAPI.getStoredToken();
-      const user = authAPI.getStoredUser();
-      
-      dispatch({
-        type: AUTH_ACTIONS.LOAD_USER,
-        payload: { user, token }
-      });
-    };
+    console.log('🔥 Setting up Firebase auth state listener');
+    const unsubscribe = firebaseAuthService.onAuthStateChanged(async (user) => {
+      console.log('🔥 Auth state changed:', user ? `User: ${user.email} (UID: ${user.uid})` : 'No user');
 
-    loadStoredUser();
+      if (user) {
+        // User is signed in
+        try {
+          console.log('🔥 User object details:', {
+            uid: user.uid,
+            email: user.email,
+            displayName: user.displayName,
+            emailVerified: user.emailVerified,
+            providerData: user.providerData
+          });
+
+          const userData = {
+            uid: user.uid,
+            email: user.email,
+            firstName: user.displayName ? user.displayName.split(' ')[0] : '',
+            lastName: user.displayName ? user.displayName.split(' ').slice(1).join(' ') : '',
+            displayName: user.displayName || ''
+          };
+
+          console.log('🔑 Getting ID token...');
+          const token = await user.getIdToken();
+          console.log('✅ Loading user data:', userData);
+          console.log('🔑 Token generated:', token ? `Token exists (${token.substring(0, 20)}...)` : 'No token');
+
+          dispatch({
+            type: AUTH_ACTIONS.LOAD_USER,
+            payload: {
+              user: userData,
+              token: token
+            }
+          });
+          console.log('✅ User loaded successfully, isAuthenticated should be true');
+        } catch (error) {
+          console.error('❌ Error loading user data:', error);
+          console.error('❌ Error details:', error.message);
+          dispatch({ type: AUTH_ACTIONS.SET_LOADING, payload: false });
+        }
+      } else {
+        // User is signed out
+        console.log('🚪 User signed out, dispatching logout');
+        console.log('🚪 Current auth state before logout:', state.isAuthenticated);
+        dispatch({ type: AUTH_ACTIONS.LOGOUT });
+      }
+    });
+
+    return () => {
+      console.log('🔥 Cleaning up auth state listener');
+      unsubscribe();
+    };
   }, []);
 
   // Login function
   const login = async (credentials) => {
     dispatch({ type: AUTH_ACTIONS.LOGIN_START });
-    
+
     try {
-      const response = await authAPI.login(credentials);
-      
-      dispatch({
-        type: AUTH_ACTIONS.LOGIN_SUCCESS,
-        payload: {
-          user: response.user,
-          token: response.token
-        }
-      });
-      
-      return response;
+      const response = await firebaseAuthService.login(credentials.email, credentials.password);
+
+      if (response.success) {
+        // Don't dispatch LOGIN_SUCCESS here - let the onAuthStateChanged listener handle it
+        // This prevents race conditions and duplicate state updates
+        return response;
+      } else {
+        throw new Error(response.message);
+      }
     } catch (error) {
       dispatch({
         type: AUTH_ACTIONS.LOGIN_FAILURE,
@@ -143,19 +183,22 @@ export function AuthProvider({ children }) {
   // Register function
   const register = async (userData) => {
     dispatch({ type: AUTH_ACTIONS.REGISTER_START });
-    
+
     try {
-      const response = await authAPI.register(userData);
-      
-      dispatch({
-        type: AUTH_ACTIONS.REGISTER_SUCCESS,
-        payload: {
-          user: response.user,
-          token: response.token
-        }
-      });
-      
-      return response;
+      const response = await firebaseAuthService.register(
+        userData.email,
+        userData.password,
+        userData.firstName || 'John',
+        userData.lastName || ''
+      );
+
+      if (response.success) {
+        // Don't dispatch REGISTER_SUCCESS here - let the onAuthStateChanged listener handle it
+        // This prevents race conditions and duplicate state updates
+        return response;
+      } else {
+        throw new Error(response.message);
+      }
     } catch (error) {
       dispatch({
         type: AUTH_ACTIONS.REGISTER_FAILURE,
@@ -168,10 +211,10 @@ export function AuthProvider({ children }) {
   // Logout function
   const logout = async () => {
     try {
-      await authAPI.logout();
+      await firebaseAuthService.logout();
+      dispatch({ type: AUTH_ACTIONS.LOGOUT });
     } catch (error) {
       console.error('Logout error:', error);
-    } finally {
       dispatch({ type: AUTH_ACTIONS.LOGOUT });
     }
   };
@@ -182,8 +225,41 @@ export function AuthProvider({ children }) {
   };
 
   // Google login function
-  const googleLogin = () => {
-    authAPI.googleLogin();
+  const googleLogin = async () => {
+    console.log('🔵 Starting Google login...');
+    dispatch({ type: AUTH_ACTIONS.LOGIN_START });
+
+    try {
+      const response = await firebaseAuthService.googleLogin();
+      console.log('🔵 Google login response:', response);
+
+      if (response.success) {
+        console.log('✅ Google login successful, waiting for auth state change...');
+        // Don't dispatch LOGIN_SUCCESS here - let the onAuthStateChanged listener handle it
+        // This prevents race conditions and duplicate state updates
+        return response;
+      } else {
+        throw new Error(response.message);
+      }
+    } catch (error) {
+      console.error('❌ Google login error:', error);
+      dispatch({
+        type: AUTH_ACTIONS.LOGIN_FAILURE,
+        payload: error.message
+      });
+      throw error;
+    }
+  };
+
+  // Password reset function
+  const resetPassword = async (email) => {
+    try {
+      const response = await firebaseAuthService.resetPassword(email);
+      return response;
+    } catch (error) {
+      console.error('Password reset error:', error);
+      throw error;
+    }
   };
 
   // Context value
@@ -193,7 +269,8 @@ export function AuthProvider({ children }) {
     register,
     logout,
     clearError,
-    googleLogin
+    googleLogin,
+    resetPassword
   };
 
   return (
